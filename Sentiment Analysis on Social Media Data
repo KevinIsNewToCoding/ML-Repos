@@ -1,0 +1,38 @@
+import pandas as pd
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from nltk import download
+
+# Download VADER lexicon
+download('vader_lexicon')
+
+# Example dataset: List of tweets
+tweets = pd.DataFrame({
+    'text': [
+        "I love this product!",
+        "This is the worst experience ever.",
+        "I'm not sure how I feel about this.",
+        "Absolutely fantastic! Highly recommended.",
+        "Meh, it's okay I guess."
+    ]
+})
+
+# Initialize VADER sentiment analyzer
+sid = SentimentIntensityAnalyzer()
+
+# Apply sentiment analysis
+tweets['sentiment'] = tweets['text'].apply(lambda x: sid.polarity_scores(x)['compound'])
+
+# Define sentiment categories
+def sentiment_category(score):
+    if score > 0:
+        return 'Positive'
+    elif score < 0:
+        return 'Negative'
+    else:
+        return 'Neutral'
+
+# Apply sentiment categories
+tweets['sentiment_category'] = tweets['sentiment'].apply(sentiment_category)
+
+# Display the results
+print(tweets)
